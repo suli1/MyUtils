@@ -10,6 +10,8 @@ import android.view.ViewGroup;
 import com.suli.myutils.MainActivity;
 import com.suli.myutils.R;
 
+import de.greenrobot.event.EventBus;
+
 /**
  * A placeholder fragment containing a simple view.
  */
@@ -59,5 +61,16 @@ public class PlaceholderFragment extends Fragment {
                 getArguments().getInt(ARG_SECTION_NUMBER));
     }
 
+
+    @Override
+    public void onStart() {
+        super.onStart();
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+
+    }
 }
 

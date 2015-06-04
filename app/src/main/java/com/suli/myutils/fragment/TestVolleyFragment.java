@@ -8,10 +8,15 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import com.alibaba.fastjson.JSONObject;
 import com.suli.myutils.GlobalContext;
 import com.suli.myutils.R;
 
+import java.security.NoSuchAlgorithmException;
+import java.security.spec.InvalidKeySpecException;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import common.log.DebugLog;
@@ -19,7 +24,10 @@ import common.net.volley.AuthFailureError;
 import common.net.volley.Request;
 import common.net.volley.Response;
 import common.net.volley.VolleyError;
+import common.net.volley.toolbox.FormText;
+import common.net.volley.toolbox.PostFormRequest;
 import common.net.volley.toolbox.StringRequest;
+import common.utils.PasswordHash;
 import common.utils.SystemUtil;
 
 /**
@@ -56,13 +64,27 @@ public class TestVolleyFragment extends PlaceholderFragment{
     }
 
     private void getRequestInfo() {
-        String url = "http://10.10.25.232:8989/menusv2/account/login";
+        String url = "http://10.10.25.232:8989/menusv3/v3/account/login";
         //String url = "http://www.baidu.com";
+        List<FormText> listItem = new ArrayList<>();
+        addCommonParam(listItem);
 
-        StringRequest request = new StringRequest(Request.Method.POST, url, new Response.Listener<String>() {
+        listItem.add(new FormText("account_phone", "18664519382"));
+
+        String strRequest = JSONObject.toJSONString(listItem);
+        mTvRequest.setText(strRequest);
+
+        try {
+            listItem.add(new FormText("password", PasswordHash.createHash("qwerty")));
+        } catch (NoSuchAlgorithmException e) {
+            e.printStackTrace();
+        } catch (InvalidKeySpecException e) {
+            e.printStackTrace();
+        }
+
+        PostFormRequest request = new PostFormRequest(url, listItem, String.class, new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
-                DebugLog.d(response);
                 mTvResponse.setText(response);
             }
         }, new Response.ErrorListener() {
@@ -70,36 +92,39 @@ public class TestVolleyFragment extends PlaceholderFragment{
             public void onErrorResponse(VolleyError error) {
                 DebugLog.d(error.toString());
             }
-        }) {
-
-            @Override
-            protected Map<String, String> getParams() throws AuthFailureError {
-                //return super.getParams();
-                Map<String, String> map = new HashMap<String, String>();
-                map.put("str_client_os", "android");
-                map.put("str_client_os_version", SystemUtil.getVersion());
-                map.put("str_client_model_type", SystemUtil.getModle());
-                map.put("str_client_screen_resolution", getScreenResolution());
-                map.put("str_client_mac", SystemUtil.getMac());
-                map.put("str_client_language", SystemUtil.getLanguage());
-                map.put("str_client_app_version", SystemUtil.getVersionName());
-
-                map.put("email", "suli@zime.com.cn");
-                map.put("password", "123456");
-
-                DebugLog.d(map.toString());
-
-                return map;
-            }
-        };
+        });
 
         //DebugLog.d(request.toString());
 
         GlobalContext.getInstance().getRequestQueue().add(request);
     }
 
+    private void addCommonParam(List<FormText> list) {
+        list.add(new FormText("str_client_os", "android"));
+        list.add(new FormText("str_client_os_version", SystemUtil.getVersion()));
+        list.add(new FormText("str_client_model_type", SystemUtil.getModle()));
+        list.add(new FormText("str_client_screen_resolution", getScreenResolution()));
+        list.add(new FormText("str_client_mac", SystemUtil.getMac()));
+        list.add(new FormText("str_client_language", SystemUtil.getLanguage()));
+        list.add(new FormText("str_client_app_version", SystemUtil.getVersionName()));
+    }
+
+
     public String getScreenResolution() {
         DisplayMetrics dm = getResources().getDisplayMetrics();
         return dm.widthPixels + "*" + dm.heightPixels;
+    }
+
+    private static class BaseResponse {
+        public int resultCode;
+        public String errorMsg;
+
+        @Override
+        public String toString() {
+            return "{" +
+                    "resultCode=" + resultCode +
+                    ", errorMsg='" + errorMsg + '\'' +
+                    '}';
+        }
     }
 }
