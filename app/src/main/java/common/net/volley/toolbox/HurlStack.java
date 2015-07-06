@@ -16,6 +16,10 @@
 
 package common.net.volley.toolbox;
 
+import com.facebook.stetho.urlconnection.ByteArrayRequestEntity;
+import com.facebook.stetho.urlconnection.SimpleRequestEntity;
+import com.facebook.stetho.urlconnection.StethoURLConnectionManager;
+
 import common.net.volley.AuthFailureError;
 import common.net.volley.Request;
 import common.net.volley.Request.Method;
@@ -30,16 +34,21 @@ import org.apache.http.message.BasicHeader;
 import org.apache.http.message.BasicHttpResponse;
 import org.apache.http.message.BasicStatusLine;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.zip.GZIPInputStream;
 
+import javax.annotation.Nullable;
 import javax.net.ssl.HttpsURLConnection;
 import javax.net.ssl.SSLSocketFactory;
 
@@ -49,6 +58,9 @@ import javax.net.ssl.SSLSocketFactory;
 public class HurlStack implements HttpStack {
 
     private static final String HEADER_CONTENT_TYPE = "Content-Type";
+
+    private static final String HEADER_ACCEPT_ENCODING = "Accept-Encoding";
+    private static final String GZIP_ENCODING = "gzip";
 
     /**
      * An interface for transforming URLs before use.
@@ -63,6 +75,8 @@ public class HurlStack implements HttpStack {
 
     private final UrlRewriter mUrlRewriter;
     private final SSLSocketFactory mSslSocketFactory;
+
+    private static StethoURLConnectionManager stethoManager;
 
     public HurlStack() {
         this(null);
@@ -88,6 +102,9 @@ public class HurlStack implements HttpStack {
     public HttpResponse performRequest(Request<?> request, Map<String, String> additionalHeaders)
             throws IOException, AuthFailureError {
         String url = request.getUrl();
+
+        stethoManager = new StethoURLConnectionManager(url);
+
         HashMap<String, String> map = new HashMap<String, String>();
         map.putAll(request.getHeaders());
         map.putAll(additionalHeaders);
@@ -100,10 +117,14 @@ public class HurlStack implements HttpStack {
         }
         URL parsedUrl = new URL(url);
         HttpURLConnection connection = openConnection(parsedUrl, request);
+        requestDecompression(connection);
+
         for (String headerName : map.keySet()) {
             connection.addRequestProperty(headerName, map.get(headerName));
         }
+
         setConnectionParametersForRequest(connection, request);
+
         // Initialize HttpResponse with data from the HttpURLConnection.
         ProtocolVersion protocolVersion = new ProtocolVersion("HTTP", 1, 1);
         int responseCode = connection.getResponseCode();
@@ -114,6 +135,9 @@ public class HurlStack implements HttpStack {
         }
         StatusLine responseStatus = new BasicStatusLine(protocolVersion,
                 connection.getResponseCode(), connection.getResponseMessage());
+
+        stethoManager.postConnect();
+
         BasicHttpResponse response = new BasicHttpResponse(responseStatus);
         response.setEntity(entityFromConnection(connection));
         for (Entry<String, List<String>> header : connection.getHeaderFields().entrySet()) {
@@ -122,7 +146,13 @@ public class HurlStack implements HttpStack {
                 response.addHeader(h);
             }
         }
+
+
         return response;
+    }
+
+    private static void requestDecompression(HttpURLConnection conn) {
+        conn.setRequestProperty(HEADER_ACCEPT_ENCODING, GZIP_ENCODING);
     }
 
     /**
@@ -130,15 +160,31 @@ public class HurlStack implements HttpStack {
      * @param connection
      * @return an HttpEntity populated with data from <code>connection</code>.
      */
-    private static HttpEntity entityFromConnection(HttpURLConnection connection) {
+    private static HttpEntity entityFromConnection(HttpURLConnection connection) throws IOException {
         BasicHttpEntity entity = new BasicHttpEntity();
-        InputStream inputStream;
+
+        ByteArrayOutputStream out = new ByteArrayOutputStream();
+        InputStream rawStream = null;
         try {
-            inputStream = connection.getInputStream();
+            rawStream = connection.getInputStream();
+
+            rawStream = stethoManager.interpretResponseStream(rawStream);
+            InputStream decompressedStream = applyDecompressionIfApplicable(connection, rawStream);
+           if(decompressedStream != null) {
+               copy(decompressedStream, out, new byte[1024]);
+            }
+            entity.setContent(new ByteArrayInputStream(out.toByteArray()));
+
         } catch (IOException ioe) {
-            inputStream = connection.getErrorStream();
+            rawStream = connection.getErrorStream();
+            entity.setContent(rawStream);
+
+        } finally {
+//            if(rawStream != null) {
+//                rawStream.close();
+//            }
         }
-        entity.setContent(inputStream);
+
         entity.setContentLength(connection.getContentLength());
         entity.setContentEncoding(connection.getContentEncoding());
         entity.setContentType(connection.getContentType());
@@ -220,13 +266,39 @@ public class HurlStack implements HttpStack {
 
     private static void addBodyIfExists(HttpURLConnection connection, Request<?> request)
             throws IOException, AuthFailureError {
+
+        // before preConnect
+
         byte[] body = request.getBody();
         if (body != null) {
+            stethoManager.preConnect(connection, new ByteArrayRequestEntity(request.getBody()));
+
             connection.setDoOutput(true);
             connection.addRequestProperty(HEADER_CONTENT_TYPE, request.getBodyContentType());
+
             DataOutputStream out = new DataOutputStream(connection.getOutputStream());
             out.write(body);
             out.close();
+
+        }
+    }
+
+    @Nullable
+    private static InputStream applyDecompressionIfApplicable(
+            HttpURLConnection conn, @Nullable InputStream in) throws IOException {
+        if (in != null && GZIP_ENCODING.equals(conn.getContentEncoding())) {
+            return new GZIPInputStream(in);
+        }
+        return in;
+    }
+
+    private static void copy(InputStream in, OutputStream out, byte[] buf) throws IOException {
+        if (in == null) {
+            return;
+        }
+        int n;
+        while ((n = in.read(buf)) != -1) {
+            out.write(buf, 0, n);
         }
     }
 }

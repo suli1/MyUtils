@@ -1,6 +1,5 @@
 package com.suli.myutils.fragment;
 
-import android.os.Build;
 import android.os.Bundle;
 import android.util.DisplayMetrics;
 import android.view.LayoutInflater;
@@ -15,25 +14,23 @@ import com.suli.myutils.R;
 import java.security.NoSuchAlgorithmException;
 import java.security.spec.InvalidKeySpecException;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import common.log.DebugLog;
-import common.net.volley.AuthFailureError;
-import common.net.volley.Request;
 import common.net.volley.Response;
 import common.net.volley.VolleyError;
 import common.net.volley.toolbox.FormText;
 import common.net.volley.toolbox.PostFormRequest;
-import common.net.volley.toolbox.StringRequest;
 import common.utils.PasswordHash;
 import common.utils.SystemUtil;
+
+import static org.assertj.android.api.Assertions.assertThat;
+
 
 /**
  * Created by suli on 2015/4/24.
  */
-public class TestVolleyFragment extends PlaceholderFragment{
+public class TestVolleyFragment extends PlaceholderFragment {
 
     private TextView mTvRequest;
     private TextView mTvResponse;
@@ -51,8 +48,10 @@ public class TestVolleyFragment extends PlaceholderFragment{
     }
 
     private void initView(View v) {
-       mTvRequest = (TextView)v.findViewById(R.id.request_tv);
-       mTvResponse = (TextView)v.findViewById(R.id.response_tv);
+        mTvRequest = (TextView) v.findViewById(R.id.request_tv);
+        mTvResponse = (TextView) v.findViewById(R.id.response_tv);
+
+        assertThat(mTvRequest).isEmpty();
 
         v.findViewById(R.id.request_btn).setOnClickListener(new View.OnClickListener() {
             @Override
@@ -68,6 +67,7 @@ public class TestVolleyFragment extends PlaceholderFragment{
         //String url = "http://www.baidu.com";
         List<FormText> listItem = new ArrayList<>();
         addCommonParam(listItem);
+
 
         listItem.add(new FormText("account_phone", "18664519382"));
 

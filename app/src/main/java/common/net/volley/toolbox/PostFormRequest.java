@@ -20,9 +20,6 @@ import common.net.volley.Response;
  */
 public class PostFormRequest<T> extends Request<T> {
 
-    /**
-     * 正确数据的时候回掉用
-     */
     private Response.Listener mListener ;
     private Type mClazz;
 
@@ -100,11 +97,10 @@ public class PostFormRequest<T> extends Request<T> {
         /*结尾行:"--" + boundary + "--" + "\r\n" ;*/
         String endLine = "--" + BOUNDARY + "--"+ "\r\n" ;
         try {
-            bos.write(endLine.toString().getBytes("utf-8"));
+            bos.write(endLine.getBytes("utf-8"));
         } catch (IOException e) {
             e.printStackTrace();
         }
-        DebugLog.d("=====formText====\n" + bos.toString()) ;
         return bos.toByteArray();
     }
 
