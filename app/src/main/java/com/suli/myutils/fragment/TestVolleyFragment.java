@@ -66,6 +66,7 @@ public class TestVolleyFragment extends PlaceholderFragment {
         String url = "http://10.10.25.232:8989/menusv3/v3/account/login";
         //String url = "http://www.baidu.com";
         List<FormText> listItem = new ArrayList<>();
+        listItem = null;
         addCommonParam(listItem);
 
 

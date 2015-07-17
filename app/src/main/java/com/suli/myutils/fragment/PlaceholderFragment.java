@@ -33,6 +33,9 @@ public class PlaceholderFragment extends Fragment {
             case 1:
                 fragment = new TestVolleyFragment();
                 break;
+            case 2:
+                fragment = new TableFragment();
+                break;
             default:
                 fragment = new PlaceholderFragment();
                 break;
