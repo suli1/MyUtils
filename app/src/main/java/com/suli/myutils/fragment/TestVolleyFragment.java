@@ -8,6 +8,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.alibaba.fastjson.JSONObject;
+import com.suli.myutils.Constants;
 import com.suli.myutils.GlobalContext;
 import com.suli.myutils.R;
 
@@ -53,6 +54,8 @@ public class TestVolleyFragment extends PlaceholderFragment {
 
         assertThat(mTvRequest).isEmpty();
 
+        mTvRequest.setText(Constants.BASE_URL);
+
         v.findViewById(R.id.request_btn).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -66,7 +69,6 @@ public class TestVolleyFragment extends PlaceholderFragment {
         String url = "http://10.10.25.232:8989/menusv3/v3/account/login";
         //String url = "http://www.baidu.com";
         List<FormText> listItem = new ArrayList<>();
-        listItem = null;
         addCommonParam(listItem);
 
 
@@ -91,7 +93,7 @@ public class TestVolleyFragment extends PlaceholderFragment {
         }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
-                DebugLog.d(error.toString());
+                mTvResponse.setText(error.getMessage());
             }
         });
 

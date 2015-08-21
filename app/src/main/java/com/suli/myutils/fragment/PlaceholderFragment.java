@@ -10,8 +10,6 @@ import android.view.ViewGroup;
 import com.suli.myutils.MainActivity;
 import com.suli.myutils.R;
 
-import de.greenrobot.event.EventBus;
-
 /**
  * A placeholder fragment containing a simple view.
  */
@@ -28,13 +26,16 @@ public class PlaceholderFragment extends Fragment {
      */
     public static PlaceholderFragment newInstance(int sectionNumber) {
 
-        PlaceholderFragment fragment = null;
+        PlaceholderFragment fragment;
         switch (sectionNumber) {
-            case 1:
+            case 0:
                 fragment = new TestVolleyFragment();
                 break;
-            case 2:
+            case 1:
                 fragment = new TableFragment();
+                break;
+            case 2:
+                fragment = new TestRendererFragment();
                 break;
             default:
                 fragment = new PlaceholderFragment();
@@ -51,8 +52,7 @@ public class PlaceholderFragment extends Fragment {
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_main, container, false);
         return rootView;
     }
@@ -60,8 +60,7 @@ public class PlaceholderFragment extends Fragment {
     @Override
     public void onAttach(Activity activity) {
         super.onAttach(activity);
-        ((MainActivity) activity).onSectionAttached(
-                getArguments().getInt(ARG_SECTION_NUMBER));
+        ((MainActivity) activity).onSectionAttached(getArguments().getInt(ARG_SECTION_NUMBER));
     }
 
 
@@ -73,7 +72,6 @@ public class PlaceholderFragment extends Fragment {
     @Override
     public void onStop() {
         super.onStop();
-
     }
 }
 

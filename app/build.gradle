@@ -37,6 +37,16 @@ android {
         exclude 'META-INF/LICENSE.txt'
         exclude 'META-INF/NOTICE.txt'
     }
+
+    productFlavors {
+        production {
+            applicationId "com.suli.myutils"
+        }
+
+        dev {
+            applicationId "com.suli.myutils.dev"
+        }
+    }
 }
 
 

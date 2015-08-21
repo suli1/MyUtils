@@ -46,7 +46,7 @@ public class PostFormRequest<T> extends Request<T> {
         try {
             T result ;
             String jsonString = new String(response.data, HttpHeaderParser.parseCharset(response.headers));
-            DebugLog.v("response:" + jsonString);
+            DebugLog.d("response:" + jsonString);
             result = JSONObject.parseObject(jsonString, mClazz);
             return Response.success(result, HttpHeaderParser.parseCacheHeaders(response));
         } catch (UnsupportedEncodingException e) {

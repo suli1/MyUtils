@@ -18,19 +18,6 @@ package common.net.volley.toolbox;
 
 import android.os.SystemClock;
 
-import common.net.volley.AuthFailureError;
-import common.net.volley.Cache;
-import common.net.volley.Network;
-import common.net.volley.NetworkError;
-import common.net.volley.NetworkResponse;
-import common.net.volley.NoConnectionError;
-import common.net.volley.Request;
-import common.net.volley.RetryPolicy;
-import common.net.volley.ServerError;
-import common.net.volley.TimeoutError;
-import common.net.volley.VolleyError;
-import common.net.volley.VolleyLog;
-
 import org.apache.http.Header;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
@@ -46,6 +33,19 @@ import java.net.SocketTimeoutException;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
+
+import common.net.volley.AuthFailureError;
+import common.net.volley.Cache;
+import common.net.volley.Network;
+import common.net.volley.NetworkError;
+import common.net.volley.NetworkResponse;
+import common.net.volley.NoConnectionError;
+import common.net.volley.Request;
+import common.net.volley.RetryPolicy;
+import common.net.volley.ServerError;
+import common.net.volley.TimeoutError;
+import common.net.volley.VolleyError;
+import common.net.volley.VolleyLog;
 
 /**
  * A network performing Volley requests over an {@link HttpStack}.
@@ -72,7 +72,7 @@ public class BasicNetwork implements Network {
 
     /**
      * @param httpStack HTTP stack to be used
-     * @param pool a buffer pool that improves GC performance in copy operations
+     * @param pool      a buffer pool that improves GC performance in copy operations
      */
     public BasicNetwork(HttpStack httpStack, ByteArrayPool pool) {
         mHttpStack = httpStack;
@@ -137,7 +137,7 @@ public class BasicNetwork implements Network {
                         throw new ServerError(networkResponse);
                     }
                 } else {
-                    throw new NetworkError(networkResponse);
+                    throw new NetworkError(e);
                 }
             }
         }
@@ -147,10 +147,10 @@ public class BasicNetwork implements Network {
      * Logs requests that took over SLOW_REQUEST_THRESHOLD_MS to complete.
      */
     private void logSlowRequests(long requestLifetime, Request<?> request,
-            byte[] responseContents, StatusLine statusLine) {
+                                 byte[] responseContents, StatusLine statusLine) {
         if (DEBUG || requestLifetime > SLOW_REQUEST_THRESHOLD_MS) {
             VolleyLog.d("HTTP response for request=<%s> [lifetime=%d], [size=%s], " +
-                    "[rc=%d], [retryCount=%s]", request, requestLifetime,
+                            "[rc=%d], [retryCount=%s]", request, requestLifetime,
                     responseContents != null ? responseContents.length : "null",
                     statusLine.getStatusCode(), request.getRetryPolicy().getCurrentRetryCount());
         }
@@ -159,10 +159,11 @@ public class BasicNetwork implements Network {
     /**
      * Attempts to prepare the request for a retry. If there are no more attempts remaining in the
      * request's retry policy, a timeout exception is thrown.
+     *
      * @param request The request to use.
      */
     private static void attemptRetryOnException(String logPrefix, Request<?> request,
-            VolleyError exception) throws VolleyError {
+                                                VolleyError exception) throws VolleyError {
         RetryPolicy retryPolicy = request.getRetryPolicy();
         int oldTimeout = request.getTimeoutMs();
 
@@ -197,7 +198,9 @@ public class BasicNetwork implements Network {
         VolleyLog.v("HTTP ERROR(%s) %d ms to fetch %s", what, (now - start), url);
     }
 
-    /** Reads the contents of HttpEntity into a byte[]. */
+    /**
+     * Reads the contents of HttpEntity into a byte[].
+     */
     private byte[] entityToBytes(HttpEntity entity) throws IOException, ServerError {
         PoolingByteArrayOutputStream bytes =
                 new PoolingByteArrayOutputStream(mPool, (int) entity.getContentLength());
