@@ -9,7 +9,7 @@
         android:orientation="vertical">
 
         <Button
-            android:id="@+id/request_btn"
+            android:id="@+id/btn_send_request"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="send request" />
@@ -21,8 +21,8 @@
             android:text="request"
             android:textSize="18sp" />
 
-        <TextView
-            android:id="@+id/request_tv"
+        <EditText
+            android:id="@+id/et_request"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="@color/black"
@@ -39,7 +39,7 @@
             android:textSize="18sp" />
 
         <TextView
-            android:id="@+id/response_tv"
+            android:id="@+id/tv_response"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="@color/black"

@@ -5,9 +5,11 @@ import android.util.DisplayMetrics;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.EditText;
 import android.widget.TextView;
 
 import com.alibaba.fastjson.JSONObject;
+import com.example.common.Contract;
 import com.suli.myutils.Constants;
 import com.suli.myutils.GlobalContext;
 import com.suli.myutils.R;
@@ -17,7 +19,6 @@ import java.security.spec.InvalidKeySpecException;
 import java.util.ArrayList;
 import java.util.List;
 
-import common.log.DebugLog;
 import common.net.volley.Response;
 import common.net.volley.VolleyError;
 import common.net.volley.toolbox.FormText;
@@ -33,7 +34,7 @@ import static org.assertj.android.api.Assertions.assertThat;
  */
 public class TestVolleyFragment extends PlaceholderFragment {
 
-    private TextView mTvRequest;
+    private EditText mEtRequest;
     private TextView mTvResponse;
 
     public TestVolleyFragment() {
@@ -42,21 +43,21 @@ public class TestVolleyFragment extends PlaceholderFragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         //return super.onCreateView(inflater, container, savedInstanceState);
-        View rootView = inflater.inflate(R.layout.fragment_volley, container, false);
+        View rootView = inflater.inflate(R.layout.fragment_net, container, false);
         initView(rootView);
 
         return rootView;
     }
 
     private void initView(View v) {
-        mTvRequest = (TextView) v.findViewById(R.id.request_tv);
-        mTvResponse = (TextView) v.findViewById(R.id.response_tv);
+        mEtRequest = (EditText) v.findViewById(R.id.et_request);
+        mTvResponse = (TextView) v.findViewById(R.id.tv_response);
 
-        assertThat(mTvRequest).isEmpty();
+        assertThat(mEtRequest).isEmpty();
 
-        mTvRequest.setText(Constants.BASE_URL);
+        mEtRequest.setText(Constants.BASE_URL);
 
-        v.findViewById(R.id.request_btn).setOnClickListener(new View.OnClickListener() {
+        v.findViewById(R.id.btn_send_request).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 getRequestInfo();
@@ -66,7 +67,7 @@ public class TestVolleyFragment extends PlaceholderFragment {
     }
 
     private void getRequestInfo() {
-        String url = "http://10.10.25.232:8989/menusv3/v3/account/login";
+        String url = Contract.BASE_URL + "/account/login";
         //String url = "http://www.baidu.com";
         List<FormText> listItem = new ArrayList<>();
         addCommonParam(listItem);
@@ -75,7 +76,7 @@ public class TestVolleyFragment extends PlaceholderFragment {
         listItem.add(new FormText("account_phone", "18664519382"));
 
         String strRequest = JSONObject.toJSONString(listItem);
-        mTvRequest.setText(strRequest);
+        mEtRequest.setText(strRequest);
 
         try {
             listItem.add(new FormText("password", PasswordHash.createHash("qwerty")));
