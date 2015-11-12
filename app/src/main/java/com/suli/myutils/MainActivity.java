@@ -30,6 +30,9 @@ public class MainActivity extends ActionBarActivity
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+        setTheme(R.style.theme_night);
+
+
         DebugLog.d("onCreate");
 
         setContentView(R.layout.activity_main);

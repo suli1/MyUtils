@@ -4,5 +4,6 @@
         <item>Network</item>
         <item>table</item>
         <item>Renderer</item>
+        <item>RxJava</item>
     </string-array>
 </resources>

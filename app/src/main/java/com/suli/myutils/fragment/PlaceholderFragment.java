@@ -37,6 +37,9 @@ public class PlaceholderFragment extends Fragment {
             case 2:
                 fragment = new TestRendererFragment();
                 break;
+            case 3:
+                fragment = new TestRxJavaFragment();
+                break;
             default:
                 fragment = new PlaceholderFragment();
                 break;
