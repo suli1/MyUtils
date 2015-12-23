@@ -40,6 +40,9 @@ public class PlaceholderFragment extends Fragment {
             case 3:
                 fragment = new TestRxJavaFragment();
                 break;
+            case 4:
+                fragment = new RetrofitFragment();
+                break;
             default:
                 fragment = new PlaceholderFragment();
                 break;

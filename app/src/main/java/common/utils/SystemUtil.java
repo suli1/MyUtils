@@ -18,20 +18,18 @@ import java.util.Locale;
 public class SystemUtil {
 
     /**
-     *
      * @return 获取系统版本号
      */
     public static String getVersion() {
         return Build.VERSION.RELEASE;
     }
 
-    public static String getModle() {
-       return Build.MODEL;
+    public static String getModel() {
+        return Build.MODEL;
     }
 
 
     /**
-     *
      * @return 获取应用版本号
      */
     public static String getVersionName() {
@@ -41,17 +39,16 @@ public class SystemUtil {
             return packageInfo.versionName;
         } catch (PackageManager.NameNotFoundException e) {
             e.printStackTrace();
-            return  "";
+            return "";
         }
     }
 
-//    public static  DisplayMetrics getDisplayMetrics() {
-//        DisplayMetrics dm = GlobalContext.getInstance().getResources().getDisplayMetrics();
-//        return dm;
-//    }
+    public static String getScreenResolution() {
+        DisplayMetrics dm = GlobalContext.getInstance().getResources().getDisplayMetrics();
+        return dm.widthPixels + "*" + dm.heightPixels;
+    }
 
     /**
-     *
      * @return 获取MAC地址
      */
     public static String getMac() {

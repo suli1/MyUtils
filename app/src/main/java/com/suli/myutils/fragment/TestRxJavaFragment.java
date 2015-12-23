@@ -88,9 +88,7 @@ public class TestRxJavaFragment extends PlaceholderFragment {
     @OnClick(R.id.btn_rxlog)
     public void onRunSchedulerExampleButtonClicked() {
         sampleObservable()
-                // Run on a background thread
                 .subscribeOn(Schedulers.newThread())
-                        // Be notified on the main thread
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new DefaultSubscriber<String>() {
                     @Override
@@ -110,7 +108,7 @@ public class TestRxJavaFragment extends PlaceholderFragment {
                 });
     }
 
-    @RxLogObservable
+//    @RxLogObservable
     static Observable<String> sampleObservable() {
         return Observable.defer(new Func0<Observable<String>>() {
             @Override

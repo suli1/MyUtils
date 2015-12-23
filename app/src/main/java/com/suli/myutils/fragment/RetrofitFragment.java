@@ -6,12 +6,22 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.suli.myutils.R;
+
+import java.security.NoSuchAlgorithmException;
+import java.security.spec.InvalidKeySpecException;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import common.log.DebugLog;
+import common.net.retrofit.MyServer;
+import common.utils.PasswordHash;
+import rx.Subscriber;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.schedulers.Schedulers;
 
 /**
  * Created by suli on 2015/11/12.
@@ -36,7 +46,38 @@ public class RetrofitFragment extends PlaceholderFragment {
 
     @OnClick(R.id.btn_send_request)
     public void onSendRequest() {
+        String account = "18664519382";
+        String password = "qwerty";
+        try {
+            password = PasswordHash.createHash(password);
+        } catch (NoSuchAlgorithmException e) {
+            e.printStackTrace();
+        } catch (InvalidKeySpecException e) {
+            e.printStackTrace();
+        }
 
+        MyServer.getAccountAPI().login(account, password)
+                .subscribeOn(Schedulers.newThread())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Subscriber<String>() {
+                    @Override
+                    public void onCompleted() {
+                        DebugLog.d("onComplete");
+                        Toast.makeText(getActivity(), "onCompleted", Toast.LENGTH_LONG).show();
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        DebugLog.e("onError");
+                        mTvResponse.setText(e.getMessage());
+                    }
+
+                    @Override
+                    public void onNext(String s) {
+                        DebugLog.d("onNext:" + s);
+                        mTvResponse.setText(s);
+                    }
+                });
     }
 
 

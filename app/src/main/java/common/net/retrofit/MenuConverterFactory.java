@@ -1,5 +1,6 @@
 package common.net.retrofit;
 
+import com.google.gson.Gson;
 import com.squareup.okhttp.RequestBody;
 import com.squareup.okhttp.ResponseBody;
 
@@ -13,6 +14,16 @@ import retrofit.Converter;
  */
 public class MenuConverterFactory extends Converter.Factory {
 
+    private final Gson gson;
+
+    public static MenuConverterFactory create() {
+        return new MenuConverterFactory(new Gson());
+    }
+
+    private MenuConverterFactory(Gson gson) {
+        this.gson = gson;
+    }
+
     @Override
     public Converter<ResponseBody, ?> fromResponseBody(Type type, Annotation[] annotations) {
         return new JsonResponseBodyConverter<>(type);
@@ -20,6 +31,7 @@ public class MenuConverterFactory extends Converter.Factory {
 
     @Override
     public Converter<?, RequestBody> toRequestBody(Type type, Annotation[] annotations) {
-        return super.toRequestBody(type, annotations);
+//        return super.toRequestBody(type, annotations);
+        return new JsonRequestBodyConverter<>(gson, type);
     }
 }

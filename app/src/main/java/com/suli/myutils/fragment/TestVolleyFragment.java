@@ -1,7 +1,6 @@
 package com.suli.myutils.fragment;
 
 import android.os.Bundle;
-import android.util.DisplayMetrics;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -67,8 +66,7 @@ public class TestVolleyFragment extends PlaceholderFragment {
     }
 
     private void getRequestInfo() {
-        String url = Contract.BASE_URL + "/account/login";
-        //String url = "http://www.baidu.com";
+        String url = Contract.BASE_URL + "menusv3/v3/account/login";
         List<FormText> listItem = new ArrayList<>();
         addCommonParam(listItem);
 
@@ -106,18 +104,13 @@ public class TestVolleyFragment extends PlaceholderFragment {
     private void addCommonParam(List<FormText> list) {
         list.add(new FormText("str_client_os", "android"));
         list.add(new FormText("str_client_os_version", SystemUtil.getVersion()));
-        list.add(new FormText("str_client_model_type", SystemUtil.getModle()));
-        list.add(new FormText("str_client_screen_resolution", getScreenResolution()));
+        list.add(new FormText("str_client_model_type", SystemUtil.getModel()));
+        list.add(new FormText("str_client_screen_resolution", SystemUtil.getScreenResolution()));
         list.add(new FormText("str_client_mac", SystemUtil.getMac()));
         list.add(new FormText("str_client_language", SystemUtil.getLanguage()));
         list.add(new FormText("str_client_app_version", SystemUtil.getVersionName()));
     }
 
-
-    public String getScreenResolution() {
-        DisplayMetrics dm = getResources().getDisplayMetrics();
-        return dm.widthPixels + "*" + dm.heightPixels;
-    }
 
     private static class BaseResponse {
         public int resultCode;

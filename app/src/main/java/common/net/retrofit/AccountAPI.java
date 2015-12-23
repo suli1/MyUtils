@@ -1,8 +1,8 @@
 package common.net.retrofit;
 
-import retrofit.http.Multipart;
+import retrofit.http.Field;
+import retrofit.http.FormUrlEncoded;
 import retrofit.http.POST;
-import retrofit.http.Part;
 import rx.Observable;
 
 /**
@@ -10,8 +10,9 @@ import rx.Observable;
  */
 public interface AccountAPI {
 
-    @Multipart
-    @POST("/login")
-    Observable<String> login(@Part("account") String account, @Part("password") String password);
+    @FormUrlEncoded
+    @POST("menusv3/v3/account/login")
+    Observable<String> login(@Field("account_phone") String account, @Field("password") String password);
+
 
 }
