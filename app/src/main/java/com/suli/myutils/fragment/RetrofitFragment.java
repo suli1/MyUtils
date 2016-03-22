@@ -17,6 +17,7 @@ import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import common.log.DebugLog;
+import common.net.retrofit.request.LoginRequest;
 import common.net.retrofit.MyServer;
 import common.utils.PasswordHash;
 import rx.Subscriber;
@@ -48,6 +49,7 @@ public class RetrofitFragment extends PlaceholderFragment {
     public void onSendRequest() {
         String account = "18664519382";
         String password = "qwerty";
+
         try {
             password = PasswordHash.createHash(password);
         } catch (NoSuchAlgorithmException e) {
@@ -56,29 +58,36 @@ public class RetrofitFragment extends PlaceholderFragment {
             e.printStackTrace();
         }
 
-        MyServer.getAccountAPI().login(account, password)
+        LoginRequest loginRequest = new LoginRequest();
+        loginRequest.account_phone = account;
+        loginRequest.password = password;
+
+        MyServer.getAccountAPI().login(loginRequest)
                 .subscribeOn(Schedulers.newThread())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Subscriber<String>() {
-                    @Override
-                    public void onCompleted() {
-                        DebugLog.d("onComplete");
-                        Toast.makeText(getActivity(), "onCompleted", Toast.LENGTH_LONG).show();
-                    }
+                .subscribe(new LoginSubscribe());
 
-                    @Override
-                    public void onError(Throwable e) {
-                        DebugLog.e("onError");
-                        mTvResponse.setText(e.getMessage());
-                    }
-
-                    @Override
-                    public void onNext(String s) {
-                        DebugLog.d("onNext:" + s);
-                        mTvResponse.setText(s);
-                    }
-                });
     }
 
+    private class LoginSubscribe extends Subscriber<String> {
+
+        @Override
+        public void onCompleted() {
+            DebugLog.d("onComplete");
+            Toast.makeText(getActivity(), "onCompleted", Toast.LENGTH_LONG).show();
+        }
+
+        @Override
+        public void onError(Throwable e) {
+            DebugLog.e("onError");
+            mTvResponse.setText(e.getMessage());
+        }
+
+        @Override
+        public void onNext(String s) {
+            DebugLog.d("onNext:" + s);
+            mTvResponse.setText(s);
+        }
+    }
 
 }

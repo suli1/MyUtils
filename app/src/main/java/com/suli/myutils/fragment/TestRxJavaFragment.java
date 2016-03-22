@@ -7,7 +7,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import com.fernandocejas.frodo.annotation.RxLogObservable;
 import com.fernandocejas.frodo.annotation.RxLogSubscriber;
 import com.suli.myutils.R;
 
@@ -19,12 +18,10 @@ import butterknife.OnClick;
 import common.log.DebugLog;
 import rx.Observable;
 import rx.Subscriber;
-import rx.android.schedulers.AndroidSchedulers;
 import rx.exceptions.OnErrorThrowable;
 import rx.functions.Action1;
 import rx.functions.Func0;
 import rx.functions.Func1;
-import rx.schedulers.Schedulers;
 
 import static android.os.Process.THREAD_PRIORITY_BACKGROUND;
 
@@ -87,28 +84,85 @@ public class TestRxJavaFragment extends PlaceholderFragment {
 
     @OnClick(R.id.btn_rxlog)
     public void onRunSchedulerExampleButtonClicked() {
-        sampleObservable()
-                .subscribeOn(Schedulers.newThread())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new DefaultSubscriber<String>() {
-                    @Override
-                    public void onCompleted() {
-                        DebugLog.d("onCompleted()");
-                    }
+//        sampleObservable()
+//                .subscribeOn(Schedulers.newThread())
+//                .observeOn(AndroidSchedulers.mainThread())
+//                .subscribe(new DefaultSubscriber<String>() {
+//                    @Override
+//                    public void onCompleted() {
+//                        DebugLog.d("onCompleted()");
+//                    }
+//
+//                    @Override
+//                    public void onError(Throwable e) {
+//                        DebugLog.e("onError");
+//                    }
+//
+//                    @Override
+//                    public void onNext(String string) {
+//                        DebugLog.d("onNext(" + string + ")");
+//                    }
+//                });
 
+        start()
+                .repeatWhen(new Func1<Observable<? extends Void>, Observable<?>>() {
+                    @Override
+                    public Observable<?> call(Observable<? extends Void> observable) {
+                        DebugLog.d("repeatWhen");
+                        return observable.delay(2, TimeUnit.SECONDS);
+                    }
+                })
+                .retryWhen(new Func1<Observable<? extends Throwable>, Observable<?>>() {
+                    @Override
+                    public Observable<?> call(Observable<? extends Throwable> observable) {
+                        DebugLog.d("retryWhen");
+                        return observable.delay(2, TimeUnit.SECONDS);
+                    }
+                })
+                .subscribe(new DefaultSubscriber<Boolean>() {
                     @Override
                     public void onError(Throwable e) {
-                        DebugLog.e("onError");
+                        super.onError(e);
+                        DebugLog.d("onError");
+                        count++;
                     }
 
                     @Override
-                    public void onNext(String string) {
-                        DebugLog.d("onNext(" + string + ")");
+                    public void onCompleted() {
+                        super.onCompleted();
+                        DebugLog.d("onCompleted");
+                    }
+
+                    @Override
+                    public void onNext(Boolean aBoolean) {
+                        super.onNext(aBoolean);
+                        DebugLog.d("onNext:" + aBoolean);
+                        count++;
                     }
                 });
+
+
     }
 
-//    @RxLogObservable
+    private int count = 1;
+
+    private Observable<Boolean> start() {
+        return Observable.create(new Observable.OnSubscribe<Boolean>() {
+            @Override
+            public void call(Subscriber<? super Boolean> subscriber) {
+                DebugLog.d("subscriber->" + count);
+                if (count % 5 == 0) {
+                    subscriber.onError(new Throwable("test error"));
+                } else {
+                    subscriber.onNext(true);
+                    subscriber.onCompleted();
+                }
+            }
+        });
+    }
+
+
+    //    @RxLogObservable
     static Observable<String> sampleObservable() {
         return Observable.defer(new Func0<Observable<String>>() {
             @Override
