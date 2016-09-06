@@ -5,6 +5,6 @@ package com.example.common;
  */
 public class Contract {
 
-    //    public final static String BASE_URL = "http://10.10.25.232:8989/menusv3/v3";
+    //    public final static String BASE_URL = "http://10.10.25.232:8787/";
     public final static String BASE_URL = "http://test.zime.com.cn:8006/";
 }

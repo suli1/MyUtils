@@ -2,21 +2,19 @@ package com.suli.myutils;
 
 import android.app.Application;
 
+import com.appsee.Appsee;
 import com.crashlytics.android.Crashlytics;
 import com.facebook.stetho.Stetho;
-import com.facebook.stetho.okhttp.StethoInterceptor;
-import com.squareup.okhttp.OkHttpClient;
 
 import common.net.volley.RequestQueue;
 import common.net.volley.toolbox.HurlStack;
-import common.net.volley.toolbox.OkHttpStack;
 import common.net.volley.toolbox.Volley;
 import io.fabric.sdk.android.Fabric;
 
 /**
  * Created by suli on 2015/4/24.
  */
-public class GlobalContext extends Application{
+public class GlobalContext extends Application {
 
     private static GlobalContext mGlobalContext = null;
 
@@ -29,7 +27,10 @@ public class GlobalContext extends Application{
     @Override
     public void onCreate() {
         super.onCreate();
-        Fabric.with(this, new Crashlytics());
+//        Fabric.with(this, new Crashlytics());
+        Fabric.with(this);
+        Appsee.start(getString(R.string.com_appsee_apikey));
+
         mGlobalContext = this;
 
         Stetho.initialize(
@@ -44,9 +45,6 @@ public class GlobalContext extends Application{
     }
 
     private void init() {
-        OkHttpClient client = new OkHttpClient();
-        client.networkInterceptors().add(new StethoInterceptor());
-        //mRequestQueue = Volley.newRequestQueue(this, new OkHttpStack(client));
         mRequestQueue = Volley.newRequestQueue(this, new HurlStack());
     }
 
