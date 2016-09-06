@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string-array name="selections">
+        <item>Retrofit</item>
         <item>Network</item>
         <item>table</item>
         <item>Renderer</item>
         <item>RxJava</item>
-        <item>Retrofit</item>
     </string-array>
 </resources>

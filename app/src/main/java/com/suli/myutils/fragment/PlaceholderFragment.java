@@ -29,19 +29,19 @@ public class PlaceholderFragment extends Fragment {
         PlaceholderFragment fragment;
         switch (sectionNumber) {
             case 0:
-                fragment = new TestVolleyFragment();
+                fragment = new RetrofitFragment();
                 break;
             case 1:
-                fragment = new TableFragment();
+                fragment = new TestVolleyFragment();
                 break;
             case 2:
-                fragment = new TestRendererFragment();
+                fragment = new TableFragment();
                 break;
             case 3:
-                fragment = new TestRxJavaFragment();
+                fragment = new TestRendererFragment();
                 break;
             case 4:
-                fragment = new RetrofitFragment();
+                fragment = new TestRxJavaFragment();
                 break;
             default:
                 fragment = new PlaceholderFragment();

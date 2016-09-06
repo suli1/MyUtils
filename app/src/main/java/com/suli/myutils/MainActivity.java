@@ -32,7 +32,6 @@ public class MainActivity extends ActionBarActivity
 
         setTheme(R.style.theme_night);
 
-
         DebugLog.d("onCreate");
 
         setContentView(R.layout.activity_main);
