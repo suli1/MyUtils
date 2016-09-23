@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent"
+              android:layout_marginLeft="64dp"
+              android:layout_marginRight="64dp"
+              android:gravity="center_vertical"
+              android:orientation="vertical"
+    >
+
+
+    <Button
+        android:id="@+id/btn_arn"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="ANR演示"
+        />
+
+
+    <Button
+        android:id="@+id/btn_memory_leak"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="内存泄露演示"
+        />
+
+
+</LinearLayout>

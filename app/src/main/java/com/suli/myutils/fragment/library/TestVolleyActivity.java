@@ -1,9 +1,8 @@
-package com.suli.myutils.fragment;
+package com.suli.myutils.fragment.library;
 
+import android.app.Activity;
 import android.os.Bundle;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.TextView;
 
@@ -31,21 +30,17 @@ import static org.assertj.android.api.Assertions.assertThat;
 /**
  * Created by suli on 2015/4/24.
  */
-public class TestVolleyFragment extends PlaceholderFragment {
+public class TestVolleyActivity extends Activity {
 
     private EditText mEtRequest;
     private TextView mTvResponse;
 
-    public TestVolleyFragment() {
-    }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        //return super.onCreateView(inflater, container, savedInstanceState);
-        View rootView = inflater.inflate(R.layout.fragment_net, container, false);
-        initView(rootView);
-
-        return rootView;
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.library_network);
+        initView(getWindow().getDecorView());
     }
 
     private void initView(View v) {

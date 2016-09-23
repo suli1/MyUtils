@@ -6,11 +6,8 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarActivity;
 import android.view.Menu;
-import android.view.MenuItem;
 
 import com.suli.myutils.fragment.PlaceholderFragment;
-
-import common.log.DebugLog;
 
 
 public class MainActivity extends ActionBarActivity
@@ -31,9 +28,6 @@ public class MainActivity extends ActionBarActivity
         super.onCreate(savedInstanceState);
 
         setTheme(R.style.theme_night);
-
-        DebugLog.d("onCreate");
-
         setContentView(R.layout.activity_main);
 
         mNavigationDrawerFragment = (NavigationDrawerFragment)
@@ -79,21 +73,5 @@ public class MainActivity extends ActionBarActivity
         }
         return super.onCreateOptionsMenu(menu);
     }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
-
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
-        }
-
-        return super.onOptionsItemSelected(item);
-    }
-
 
 }

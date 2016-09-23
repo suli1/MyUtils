@@ -1,9 +1,7 @@
-package com.suli.myutils.fragment;
+package com.suli.myutils.fragment.library;
 
+import android.app.Activity;
 import android.os.Bundle;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -17,8 +15,8 @@ import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import common.log.DebugLog;
-import common.net.retrofit.request.LoginRequest;
 import common.net.retrofit.MyServer;
+import common.net.retrofit.request.LoginRequest;
 import common.utils.PasswordHash;
 import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
@@ -28,7 +26,7 @@ import rx.schedulers.Schedulers;
  * Created by suli on 2015/11/12.
  * Retrofit库实例
  */
-public class RetrofitFragment extends PlaceholderFragment {
+public class TestRetrofitActivity extends Activity {
 
     @Bind(R.id.et_request)
     EditText mEtRequest;
@@ -38,10 +36,16 @@ public class RetrofitFragment extends PlaceholderFragment {
 
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View rootView = inflater.inflate(R.layout.fragment_net, container, false);
-        ButterKnife.bind(this, rootView);
-        return rootView;
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.library_network);
+        ButterKnife.bind(this);
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        ButterKnife.unbind(this);
     }
 
 
@@ -74,7 +78,7 @@ public class RetrofitFragment extends PlaceholderFragment {
         @Override
         public void onCompleted() {
             DebugLog.d("onComplete");
-            Toast.makeText(getActivity(), "onCompleted", Toast.LENGTH_LONG).show();
+            Toast.makeText(TestRetrofitActivity.this, "onCompleted", Toast.LENGTH_LONG).show();
         }
 
         @Override

@@ -7,6 +7,7 @@ import android.graphics.Paint;
 import android.util.AttributeSet;
 import android.view.View;
 
+import common.log.DebugLog;
 import common.utils.DisplayUtil;
 
 
@@ -42,6 +43,10 @@ public class BatteryView extends View {
     }
 
     private void init() {
+        if (isInEditMode()) {
+            return;
+        }
+
         mTailWidth = DisplayUtil.dip2px(3);
         outWidth = DisplayUtil.dip2px(1);
         gap = DisplayUtil.dip2px(1);
@@ -52,14 +57,29 @@ public class BatteryView extends View {
 
     public void setPercent(float percent) {
         mPercent = percent;
-        postInvalidate();
+//        postInvalidate();
+    }
+
+
+    @Override
+    protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
+        super.onMeasure(widthMeasureSpec, heightMeasureSpec);
+        DebugLog.d("onMeasure");
+    }
+
+    @Override
+    protected void onLayout(boolean changed, int left, int top, int right, int bottom) {
+        super.onLayout(changed, left, top, right, bottom);
+        DebugLog.d("onLayout");
     }
 
     @Override
     protected void onDraw(Canvas canvas) {
-
         super.onDraw(canvas);
-
+        if (isInEditMode()) {
+            return;
+        }
+        DebugLog.d("onDraw");
         drawBattery(canvas);
     }
 

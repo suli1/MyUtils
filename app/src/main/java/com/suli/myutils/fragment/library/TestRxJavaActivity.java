@@ -1,10 +1,8 @@
-package com.suli.myutils.fragment;
+package com.suli.myutils.fragment.library;
 
+import android.app.Activity;
 import android.os.Bundle;
 import android.os.HandlerThread;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.fernandocejas.frodo.annotation.RxLogSubscriber;
@@ -28,22 +26,22 @@ import static android.os.Process.THREAD_PRIORITY_BACKGROUND;
 /**
  * Created by suli on 2015/10/20.
  */
-public class TestRxJavaFragment extends PlaceholderFragment {
+public class TestRxJavaActivity extends Activity {
 
     @Bind(R.id.tv_output)
     TextView tvOutput;
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View rootView = inflater.inflate(R.layout.fragment_rxjava, container, false);
-        ButterKnife.bind(this, rootView);
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.library_rxjava);
+        ButterKnife.bind(this);
         testRxJava();
-        return rootView;
     }
 
     @Override
-    public void onDestroyView() {
-        super.onDestroyView();
+    protected void onDestroy() {
+        super.onDestroy();
         ButterKnife.unbind(this);
     }
 

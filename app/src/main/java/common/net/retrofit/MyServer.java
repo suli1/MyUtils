@@ -15,10 +15,11 @@ public class MyServer {
     private static AccountAPI accountAPI;
 
 
-    public static AccountAPI getAccountAPI() {
+    public static synchronized AccountAPI getAccountAPI() {
         if (accountAPI == null) {
-            OkHttpClient client = new OkHttpClient();
-            client.networkInterceptors().add(new StethoInterceptor());
+            OkHttpClient client = new OkHttpClient.Builder()
+                    .addNetworkInterceptor(new StethoInterceptor())
+                    .build();
             Retrofit retrofit = new Retrofit.Builder()
                     .baseUrl(Contract.BASE_URL)
                     .addCallAdapterFactory(RxJavaCallAdapterFactory.create())

@@ -1,9 +1,11 @@
-package com.suli.myutils.fragment;
+package com.suli.myutils.fragment.effects;
 
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+
+import com.suli.myutils.fragment.PlaceholderFragment;
 
 import common.opengl.MyRenderer;
 
