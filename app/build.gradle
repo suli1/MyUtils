@@ -5,8 +5,8 @@ buildscript {
     }
 
     dependencies {
-        classpath 'io.fabric.tools:gradle:1.21.2'
-        classpath "com.fernandocejas.frodo:frodo-plugin:0.8.1"
+        classpath 'io.fabric.tools:gradle:1.25.1'
+        classpath "com.fernandocejas.frodo:frodo-plugin:0.8.3"
     }
 }
 apply plugin: 'com.android.application'
@@ -19,27 +19,20 @@ repositories {
 }
 
 
+def ext = rootProject.ext
+
 android {
     compileSdkVersion rootProject.ext.compileSdkVersion
     buildToolsVersion rootProject.ext.buildToolsVersion
 
     useLibrary 'org.apache.http.legacy'
 
-//    compileOptions {
-//        sourceCompatibility JavaVersion.VERSION_1_8
-//        targetCompatibility JavaVersion.VERSION_1_8
-//    }
-
     defaultConfig {
         applicationId "com.suli.myutils"
-        minSdkVersion 15
-        targetSdkVersion 23
+        minSdkVersion ext.minSdkVersion
+        targetSdkVersion ext.targetSdkVersion
         versionCode 1
         versionName "1.0"
-//
-//        jackOptions {
-//            enabled true
-//        }
     }
     buildTypes {
         release {
@@ -53,12 +46,16 @@ android {
         exclude 'META-INF/NOTICE.txt'
     }
 
+    flavorDimensions "default"
+
     productFlavors {
         production {
+            dimension "default"
             applicationId "com.suli.myutils"
         }
 
         dev {
+            dimension "default"
             applicationId "com.suli.myutils.dev"
         }
     }
@@ -69,10 +66,10 @@ dependencies {
     compile project(':common')
 
     compile fileTree(dir: 'libs', include: ['*.jar'])
-    compile 'com.android.support:appcompat-v7:24.2.1'
-    compile 'com.android.support:gridlayout-v7:24.2.1'
+    compile "com.android.support:appcompat-v7:${ext.supportedVersion}"
+    compile "com.android.support:gridlayout-v7:${ext.supportedVersion}"
     compile 'de.greenrobot:eventbus:2.4.0'
-    compile 'com.alibaba:fastjson:1.2.6'
+    compile 'com.alibaba:fastjson:1.2.47'
     compile 'com.squareup.assertj:assertj-android:1.0.0'
 
     // test
@@ -83,30 +80,31 @@ dependencies {
     testCompile "org.mockito:mockito-core:1.10.19"
 
     // net
-    compile 'com.squareup.retrofit2:adapter-rxjava:2.0.0-beta4'
+    compile 'com.squareup.retrofit2:adapter-rxjava:2.1.0'
 //    compile 'com.squareup.retrofit:converter-gson:2.0.0-beta2'
-    compile 'com.squareup.retrofit2:retrofit:2.0.0-beta4'
+    compile 'com.squareup.retrofit2:retrofit:2.3.0'
 
-    compile 'com.facebook.stetho:stetho:1.3.0'
-    compile 'com.facebook.stetho:stetho-okhttp3:1.3.0'
+    compile 'com.facebook.stetho:stetho:1.5.0'
+    compile 'com.facebook.stetho:stetho-okhttp3:1.5.0'
     compile 'com.facebook.stetho:stetho-urlconnection:1.3.0'
 
     // orm
     compile 'de.greenrobot:greendao:2.0.0'
 
     // RxJava
-    compile 'io.reactivex:rxjava:1.0.14'
-    compile 'io.reactivex:rxandroid:1.0.1'
-    compile 'com.jakewharton:butterknife:7.0.1'
+    compile 'io.reactivex:rxjava:1.2.5'
+    compile 'io.reactivex:rxandroid:1.2.1'
+    compile 'com.jakewharton:butterknife:8.8.1'
+    annotationProcessor 'com.jakewharton:butterknife-compiler:8.8.1'
 
     // crash
     compile('com.crashlytics.sdk.android:crashlytics:2.4.0@aar') {
-        transitive = true;
+        transitive = true
     }
-    compile('com.appsee:appsee-android:2.1.5@aar') {
-        transitive = true;
+    compile('com.appsee:appsee-android:2.3.1@aar') {
+        transitive = true
     }
-    compile('io.fabric.sdk.android:fabric:1.3.10@aar') {
-        transitive = true;
-    }
+//    compile('io.fabric.sdk.android:fabric:1.3.10@aar') {
+//        transitive = true;
+//    }
 }

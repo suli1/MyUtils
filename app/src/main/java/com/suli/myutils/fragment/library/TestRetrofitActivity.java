@@ -6,12 +6,13 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import butterknife.BindView;
+import butterknife.Unbinder;
 import com.suli.myutils.R;
 
 import java.security.NoSuchAlgorithmException;
 import java.security.spec.InvalidKeySpecException;
 
-import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import common.log.DebugLog;
@@ -28,10 +29,12 @@ import rx.schedulers.Schedulers;
  */
 public class TestRetrofitActivity extends Activity {
 
-    @Bind(R.id.et_request)
+    private Unbinder unbinder;
+
+    @BindView(R.id.et_request)
     EditText mEtRequest;
 
-    @Bind(R.id.tv_response)
+    @BindView(R.id.tv_response)
     TextView mTvResponse;
 
 
@@ -39,13 +42,13 @@ public class TestRetrofitActivity extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.library_network);
-        ButterKnife.bind(this);
+        unbinder = ButterKnife.bind(this);
     }
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        ButterKnife.unbind(this);
+        unbinder.unbind();
     }
 
 

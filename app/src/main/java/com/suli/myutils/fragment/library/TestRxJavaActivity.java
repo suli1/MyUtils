@@ -5,12 +5,13 @@ import android.os.Bundle;
 import android.os.HandlerThread;
 import android.widget.TextView;
 
+import butterknife.BindView;
+import butterknife.Unbinder;
 import com.fernandocejas.frodo.annotation.RxLogSubscriber;
 import com.suli.myutils.R;
 
 import java.util.concurrent.TimeUnit;
 
-import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import common.log.DebugLog;
@@ -28,21 +29,23 @@ import static android.os.Process.THREAD_PRIORITY_BACKGROUND;
  */
 public class TestRxJavaActivity extends Activity {
 
-    @Bind(R.id.tv_output)
+    private Unbinder unbinder;
+
+    @BindView(R.id.tv_output)
     TextView tvOutput;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.library_rxjava);
-        ButterKnife.bind(this);
+        unbinder = ButterKnife.bind(this);
         testRxJava();
     }
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        ButterKnife.unbind(this);
+        unbinder.unbind();
     }
 
     private void testRxJava() {

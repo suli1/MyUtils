@@ -4,9 +4,10 @@ import android.app.Activity;
 import android.os.Bundle;
 import android.widget.Toast;
 
+import butterknife.BindView;
+import butterknife.Unbinder;
 import com.suli.myutils.R;
 
-import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import common.widget.BatteryView;
@@ -19,7 +20,9 @@ public class ViewDrawActivity extends Activity {
 
     private static final int OFFSET = 10;
 
-    @Bind(R.id.v_battery)
+    private Unbinder unbinder;
+
+    @BindView(R.id.v_battery)
     BatteryView batteryView;
 
     private float percent = 50;
@@ -28,14 +31,14 @@ public class ViewDrawActivity extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.view_draw_activity);
-        ButterKnife.bind(this);
+        unbinder = ButterKnife.bind(this);
         updateBattery();
     }
 
     @Override
     public void onDestroy() {
         super.onDestroy();
-        ButterKnife.unbind(this);
+        unbinder.unbind();
     }
 
 
