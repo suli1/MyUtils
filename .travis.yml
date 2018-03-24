@@ -22,8 +22,8 @@ before_install:
   - yes | sdkmanager 'platforms;android-26'
 
 before_script:
-  - git fetch --unshallow
-  - version="$(git describe --long --tags | sed 's/^v//;s/-\([0-9]\+\)-g\([0-9a-f]\+\)/+\1.\2/')"
+#  - git fetch --unshallow
+  - version="$(git rev-parse --short HEAD)"
   - sed -i 's/versionName .*/versionName "'"${version}"'"/' app/build.gradle
   - grep 'versionName' app/build.gradle
   - cp signing.properties.travis signing.properties
