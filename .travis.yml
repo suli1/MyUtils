@@ -1,41 +1,45 @@
 language: android
 
 jdk:
-  - oraclejdk8
+- oraclejdk8
 
 android:
   components:
-    - tools
-    - platform-tools
-    - build-tools-26.0.2
-    - android-26
+  - tools
+  - platform-tools
+  - build-tools-26.0.2
+  - android-26
 
 before_cache:
-    - rm -f $HOME/.gradle/caches/modules-2/modules-2.lock
+- rm -f $HOME/.gradle/caches/modules-2/modules-2.lock
 
 cache:
   directories:
-    - $HOME/.gradle/caches/
-    - $HOME/.gradle/wrapper/
+  - "$HOME/.gradle/caches/"
+  - "$HOME/.gradle/wrapper/"
 
 before_install:
-  - yes | sdkmanager 'platforms;android-26'
+- yes | sdkmanager 'platforms;android-26'
 
 before_script:
-#  - git fetch --unshallow
-  - version="$(git rev-parse --short HEAD)"
-  - sed -i 's/versionName .*/versionName "'"${version}"'"/' app/build.gradle
-  - grep 'versionName' app/build.gradle
-  - cp signing.properties.travis signing.properties
+- version="$(git rev-parse --short HEAD)"
+- sed -i 's/versionName .*/versionName "'"${version}"'"/' app/build.gradle
+- grep 'versionName' app/build.gradle
+- cp signing.properties.travis signing.properties
 
 script:
-  - ./gradlew assembleRelease
+- "./gradlew assembleRelease"
 
 after_success:
-  - cp app/build/outputs/apk/production/app-production-release.apk "app-ci-${version}.apk"
-#  - >-
-#    description="$(git show -s --format='> Commit: %H%n> Author: %an%n> Date: %ad%n%n%s%+b')"
-#  - ./upload-to-releases.sh 'DreaminginCodeZH/DouyaCiBuilds' "${version}" "${description}" "app-ci-${version}.apk"
+- cp app/build/outputs/apk/production/release/app-production-release.apk "app-ci-${version}.apk"
 
 after_failure:
-  - cat app/build/reports/lint-results*.html
+- cat app/build/reports/lint-results*.html
+
+deploy:
+  provider: releases
+  api_key:
+    secure: tP5G3o+gYQjp6mGex35CPcTR1AzIF0w+T7lXwf6L78PCDpAgBKm0vHDVClo1oTDspuwr332fiC+sBHne0qvawsOq/uUCJkEJlDwXXDw7HiSe5VbDlErl7gccIo6L/WBICjNI/irvUrn4ML/CX5zvI9dfXwwRRRCJK1QIiYaonBETF98Lc9tH4uw2naQJfjupCJVh484ibKV474/hTjM9zUxggosu+TGIZvAjzsCnymMfw/rv7ilxQWEi7X2lAzCXIdRhnxAT4dh1j6HeQIqqiE3gT9Axtcjob0Vyd0gaulLBSryqg5T31iati1bUFpCsebU90z+oa8O2doPhXpbQPVKPDv03UCcN64XvtnS2Fz9i1H/mxzetO2738IGVyxLUR3Js/FQKtDdMQr6ikoy8Pt5p4kZqMoLsL6dtWdXj11jHIlINM3dcfvKKSnI2kKbyRt0bInfTBXqny1RuVKhv9akvxC2HFzYL+/NE1V7qoEK/7KgQwECyPfjA5o0QE78VyvsMUYzrn0vsh4GY6vpAocvgtJJy9Fuwk74sopiPlUky0dXauRQtLttQdp1KM9ZJlVo9xGKjjYfVevm6OS0EbmFL2Kn2MW03qSpB07VSvbnQQSoXFW7zrSrvYZAkhyfqHpS2bo3fzEF5yDnJypR4syBEWlVlKUC3gxTSZjTJOsc=
+  file: "app-ci-${version}.apk"
+  on:
+    repo: suli1/MyUtils
